@@ -12,7 +12,7 @@ const Hero = () => {
       >
         <p className="text-base text-gray-400 mb-3">Lucknow, IN</p>
       </motion.div>
-      
+
       <motion.p 
         className="text-lg leading-relaxed text-gray-300 max-w-2xl mb-6"
         initial={{ opacity: 0, y: 20 }}
