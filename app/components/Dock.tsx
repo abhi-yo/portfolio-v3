@@ -1,11 +1,26 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 
 const Dock = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const hideTimeoutRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 400);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   // Show dock on scroll and hide after inactivity
   useEffect(() => {
@@ -69,10 +84,18 @@ const Dock = () => {
       action: () => window.open('https://github.com', '_blank')
     },
     { 
+      id: 'linkedin',
+      name: 'LinkedIn',
+      icon: 'https://icon.horse/icon/linkedin.com',
+      action: () => window.open('https://linkedin.com/in/akshatsingh', '_blank'),
+      hideOnMobile: true
+    },
+    { 
       id: 'twitter', 
       name: 'Twitter', 
       icon: 'https://icon.horse/icon/x.com',
-      action: () => window.open('https://twitter.com', '_blank')
+      action: () => window.open('https://twitter.com', '_blank'),
+      hideOnMobile: true
     },
     { 
       id: 'mail', 
@@ -91,44 +114,58 @@ const Dock = () => {
   };
 
   return (
-    <div 
-      className={`fixed bottom-6 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-      }`}
+    <motion.div
+      initial={{ y: 40, opacity: 0 }}
+      animate={{ y: isVisible ? 0 : 20, opacity: isVisible ? 1 : 0 }}
+      transition={{ type: 'spring', stiffness: 80, damping: 12 }}
+      className="fixed left-1/2 -translate-x-1/2 z-[1000] bottom-safe"
+      style={{ bottom: 'max(env(safe-area-inset-bottom, 16px), 16px)' }}
     >
-      <div 
-        className="flex items-end justify-center gap-3.5 bg-white/10 backdrop-blur-md rounded-2xl px-3 py-2 border border-white/20 shadow-2xl"
+      <motion.div
+        className="flex items-end justify-center gap-1.5 sm:gap-2 md:gap-3.5 bg-white/10 backdrop-blur-md rounded-lg sm:rounded-xl md:rounded-2xl px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1.5 md:py-2 border border-white/20 shadow-2xl mx-2 scale-90 sm:scale-100"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        initial={{ boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
+        animate={{ boxShadow: isVisible ? '0 16px 40px rgba(0,0,0,0.25)' : '0 8px 32px rgba(0,0,0,0.2)' }}
+        transition={{ duration: 0.5 }}
       >
         {apps.map((app, index) => {
+          if (app.hideOnMobile && isMobile) return null;
           const scale = getScale(index);
           return (
-            <div
+            <motion.div
               key={app.id}
-              className="flex flex-col items-center justify-end transition-transform duration-200 ease-out cursor-pointer"
-              style={{ 
-                transform: `scale(${scale})`,
-                transformOrigin: 'bottom center'
-              }}
+              className="flex flex-col items-center justify-end cursor-pointer touch-manipulation"
+              style={{ transformOrigin: 'bottom center' }}
+              whileHover={{ scale: 1.2, y: -6, boxShadow: '0 8px 24px rgba(0,0,0,0.18)' }}
+              whileTap={{ scale: 0.95 }}
+              animate={{ scale, y: hoveredIndex === index ? -8 : 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
               onMouseEnter={() => setHoveredIndex(index)}
               onClick={app.action}
               title={app.name}
             >
-              <img
+              <motion.img
                 src={app.icon}
                 alt={app.name}
-                className="w-10 h-10 rounded-lg object-cover"
+                className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-lg object-cover"
                 style={{
-                  filter: `drop-shadow(0 ${scale > 1.1 ? '2px 4px' : '1px 2px'} rgba(0,0,0,0.3))`
+                  filter: `drop-shadow(0 ${scale > 1.1 ? '2px 4px' : '1px 2px'} rgba(0,0,0,0.3))`,
+                  minWidth: '28px',
+                  minHeight: '28px',
+                  maxWidth: '40px', 
+                  maxHeight: '40px'
                 }}
+                initial={{ y: 0 }}
+                animate={{ y: hoveredIndex === index ? -4 : 0 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
               />
-            </div>
+            </motion.div>
           );
         })}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
-export default Dock; 
+export default Dock;
