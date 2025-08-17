@@ -2,19 +2,24 @@
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-8">
-      <h2 className="text-2xl font-bold text-white mb-4">
+    <section id="contact" className="py-10">
+      <h2 className="text-[20px] font-[550] text-white mb-3 tracking-[-0.01em]">
         Get in Touch
       </h2>
-      <p className="text-lg text-gray-300 leading-relaxed">
-        I&apos;m currently available for new opportunities. Feel free to reach out to me at{' '}
-        <a href="mailto:akshatsing11@gmail.com" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">
-          mail
-        </a>
-        , and I&apos;ll get back to you as soon as I can.
+      <p className="text-[13.5px] leading-[1.8] text-gray-300">
+        I&apos;m currently available for new opportunities. Reach out at{" "}
+        <a
+          href="mailto:akshatsing11@gmail.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-cyan-300 hover:underline"
+        >
+          akshatsing11@gmail.com
+        </a>{" "}
+        and I&apos;ll get back soon.
       </p>
     </section>
   );
 };
 
-export default Contact; 
+export default Contact;
