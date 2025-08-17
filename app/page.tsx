@@ -6,7 +6,7 @@ import Dock from "./components/Dock";
 
 export default function Home() {
   return (
-    <main className="container mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+    <main className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-28">
       <Navbar />
       <Hero />
       <Projects />
